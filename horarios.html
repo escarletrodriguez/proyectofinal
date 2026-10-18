@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Disponibilidad Médica</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+    <header class="header-sistema">
+
+
+        <div class="header-logo">
+
+            <img
+                src="logo.png"
+                alt="Logo"
+            >
+
+
+            <div>
+
+                <h2>
+                    Caja Nacional de Salud
+                </h2>
+
+                <p>
+                    Sistema de Citas Médicas
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <nav>
+
+            <a href="sistema.html">
+                ← Volver
+            </a>
+
+
+            <a href="historial.html">
+                📋 Mis citas
+            </a>
+
+        </nav>
+
+
+    </header>
+
+
+
+    <main class="contenedor">
+
+
+        <section class="medico-seleccionado">
+
+
+            <h1 id="nombreMedico"></h1>
+
+
+            <p id="especialidadMedico"></p>
+
+
+        </section>
+
+
+
+        <section class="seccion-horarios">
+
+
+            <h2>
+                📅 Selecciona una fecha
+            </h2>
+
+
+            <input
+                type="date"
+                id="fechaCita"
+            >
+
+
+            <h2>
+                🕒 Horarios disponibles
+            </h2>
+
+
+            <div
+                id="horarios"
+                class="horarios-grid"
+            >
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <section
+            class="confirmacion"
+            id="confirmacion"
+        >
+
+
+            <h2>
+                Confirmar cita
+            </h2>
+
+
+            <p
+                id="informacionCita"
+            >
+
+
+            </p>
+
+
+            <input
+                type="text"
+                id="motivo"
+                placeholder="Motivo de la consulta"
+            >
+
+
+            <button
+                class="boton-confirmar"
+                onclick="confirmarCita()"
+            >
+
+                Confirmar cita
+
+            </button>
+
+
+        </section>
+
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>

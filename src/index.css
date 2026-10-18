@@ -1,0 +1,150 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f8f3;
+  color: #26352a;
+}
+
+.pagina-inicio {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #075b32, #0a8045, #39a96b);
+}
+
+.inicio {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.inicio-contenido {
+  width: 90%;
+  max-width: 900px;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 60px 45px;
+  border-radius: 25px;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+}
+
+.logo-grande {
+  font-size: 80px;
+  margin-bottom: 15px;
+}
+
+.inicio h1 {
+  color: #075b32;
+  font-size: 42px;
+  margin: 0 0 12px;
+}
+
+.inicio h2 {
+  color: #168a4b;
+  margin: 0 0 20px;
+  font-weight: 500;
+}
+
+.inicio p {
+  max-width: 650px;
+  margin: 0 auto 20px;
+  color: #607067;
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.boton-grande {
+  border: 0;
+  background: linear-gradient(135deg, #078542, #075b32);
+  color: white;
+  padding: 16px 40px;
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 20px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(7, 132, 66, 0.3);
+  transition: 0.3s;
+}
+
+.boton-grande:hover {
+  transform: translateY(-4px) scale(1.03);
+}
+
+.especialidades-seccion {
+  background: #f1f8f3;
+  padding: 70px 20px;
+}
+
+.contenedor {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.titulo-pagina {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.titulo-pagina h2 {
+  color: #075b32;
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.titulo-pagina p {
+  color: #69776e;
+}
+
+.especialidades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px;
+}
+
+.especialidad-card {
+  background: white;
+  padding: 28px 20px;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+  transition: 0.3s;
+}
+
+.especialidad-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+.especialidad-icono {
+  font-size: 38px;
+}
+
+.especialidad-card h3 {
+  color: #168a4b;
+  margin: 12px 0 8px;
+}
+
+.especialidad-card p {
+  color: #718078;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .inicio h1 {
+    font-size: 30px;
+  }
+
+  .inicio-contenido {
+    padding: 40px 20px;
+  }
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Agenda médica</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header-sistema">
+        <div class="header-logo"><img src="logo.png" alt="Logo">
+            <div>
+                <h2>Caja Nacional de Salud</h2>
+                <p>Registro de atención de pacientes</p>
+            </div>
+        </div>
+        <nav><a href="index.html" onclick="cerrarSesion()">Salir</a></nav>
+    </header>
+    <main class="contenedor">
+        <section class="titulo-pagina">
+            <h1>Agenda médica</h1>
+            <p>Prototipo educativo para la gestión de citas.</p>
+        </section>
+        <section class="panel-control">
+            <div id="resumenPanel"></div><label for="buscarCita">Buscar por paciente, médico o número de
+                ficha</label><input id="buscarCita" type="search" placeholder="Buscar cita"><label
+                for="filtroEstado">Estado</label><select id="filtroEstado">
+                <option value="">Todos</option>
+                <option>Pendiente</option>
+                <option>Validada</option>
+                <option>Atendida</option>
+                <option>Cancelada</option>
+                <option>No asistió</option>
+            </select>
+        </section>
+        <div class="tabla-contenedor">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ficha</th>
+                        <th>Paciente</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Médico</th>
+                        <th>Especialidad</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaPanel"></tbody>
+            </table>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <script src="panel.js"></script>
+</body>
+
+</html>
