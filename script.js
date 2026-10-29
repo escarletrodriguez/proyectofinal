@@ -221,6 +221,9 @@ especialidadesMedicas.forEach(especialidad => {
                 especialidad: especialidad.nombre
             };
         } else if (usuarios[usuarioMedico].rol === "medico") {
+            // Contraseña de acceso común para las cuentas demo del personal médico.
+            usuarios[usuarioMedico].password = "Medico2026!";
+            usuarios[usuarioMedico].nombre = nombreMedico;
             usuarios[usuarioMedico].medico = nombreMedico;
             usuarios[usuarioMedico].especialidad = especialidad.nombre;
         }
