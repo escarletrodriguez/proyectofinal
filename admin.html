@@ -1,79 +1,13 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Administración de citas</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Menú administrativo - CNS</title><link rel="stylesheet" href="style.css"></head>
 <body>
-    <header class="header-sistema">
-        <div class="header-logo"><img src="logo.png" alt="Logo">
-            <div><h2>Caja Nacional de Salud</h2><p>Administración y control de fichas</p>
-                <p id="bienvenidaUsuario" class="saludo-usuario" aria-live="polite"></p></div>
-        </div>
-        <nav><a href="index.html" onclick="cerrarSesion()">Salir</a></nav>
-    </header>
-    <main class="contenedor">
-        <section class="titulo-pagina">
-            <h1>Administración de citas</h1>
-            <p>Consulta las fichas y administra los cupos disponibles.</p>
-        </section>
-        <section class="panel-control">
-            <div id="resumenPanel"></div>
-            <label for="buscarCita">Buscar por paciente, médico o número de ficha</label>
-            <input id="buscarCita" type="search" placeholder="Buscar cita">
-            <label for="filtroEstado">Filtrar por estado</label>
-            <select id="filtroEstado">
-                <option value="">Todos los estados</option>
-                <option>Pendiente</option>
-                <option>Realizado (Atendido)</option>
-                <option>Cancelado</option>
-                <option>Sin asistencia</option>
-            </select>
-        </section>
-        <section class="panel-control" aria-labelledby="tituloGestionMedicos">
-            <h2 id="tituloGestionMedicos" style="width:100%">Gestionar especialidades y médicos</h2>
-            <label for="nuevaEspecialidad">Nueva especialidad</label>
-            <input id="nuevaEspecialidad" type="text" placeholder="Ej. Reumatología" maxlength="70">
-            <button id="agregarEspecialidad" type="button" class="boton-accion">Agregar especialidad</button>
-            <label for="gestionEspecialidad">Especialidad</label><select id="gestionEspecialidad"></select>
-            <label for="nombreNuevoMedico">Nombre del médico</label>
-            <input id="nombreNuevoMedico" type="text" placeholder="Ej. Dra. Ana Pérez" maxlength="100">
-            <button id="agregarMedico" type="button" class="boton-accion">Agregar médico</button>
-            <label for="medicoRetirar">Médico a retirar o mover</label><select id="medicoRetirar"></select>
-            <label for="especialidadDestino">Nueva especialidad del médico (opcional)</label><select id="especialidadDestino"></select>
-            <button id="moverMedico" type="button" class="boton-accion">Mover médico</button>
-            <button id="retirarMedico" type="button" class="boton-accion">Retirar médico</button>
-            <p id="estadoGestionMedicos" role="status" style="width:100%"></p>
-        </section>
-        <section class="panel-control" aria-labelledby="tituloDisponibilidad">
-            <h2 id="tituloDisponibilidad" style="width:100%">Disponibilidad por médico y fecha</h2>
-            <label for="disponibilidadMedico">Médico</label><select id="disponibilidadMedico"></select>
-            <label for="disponibilidadFecha">Fecha</label><input id="disponibilidadFecha" type="date">
-            <button id="consultarDisponibilidad" type="button" class="boton-accion">Consultar horarios</button>
-            <p id="resumenDisponibilidad" role="status" style="width:100%"></p>
-            <div class="tabla-contenedor" style="width:100%">
-                <table><thead><tr><th>Hora</th><th>Disponibilidad</th><th>Paciente / Ficha</th><th>Estado</th><th>Acción administrativa</th></tr></thead><tbody id="tablaDisponibilidad"></tbody></table>
-            </div>
-        </section>
-        <section class="panel-control" aria-labelledby="tituloCupos">
-            <h2 id="tituloCupos" style="width:100%">Configurar cupos de fichas</h2>
-            <label for="cupoEspecialidad">Especialidad</label><select id="cupoEspecialidad"></select>
-            <label for="cupoFecha">Fecha</label><input id="cupoFecha" type="date">
-            <label for="cupoLimite">Cantidad máxima de fichas</label><input id="cupoLimite" type="number" min="0" step="1" placeholder="Ej. 10">
-            <button id="guardarCupo" type="button" class="boton-accion">Guardar cupo</button>
-            <button id="quitarCupo" type="button" class="boton-accion">Sin límite</button>
-            <p id="estadoCupo" role="status" style="width:100%"></p>
-        </section>
-        <div class="tabla-contenedor">
-            <table>
-                <thead><tr><th>Ficha</th><th>Paciente</th><th>CI</th><th>Fecha</th><th>Hora</th><th>Médico</th><th>Especialidad</th><th>Estado</th><th>Acciones</th></tr></thead>
-                <tbody id="tablaPanel"></tbody>
-            </table>
-        </div>
-    </main>
-    <script src="script.js"></script>
-    <script src="panel.js"></script>
-</body>
-</html>
+<header class="header-sistema"><div class="header-logo"><img src="logo.png" alt="Logo"><div><h2>Caja Nacional de Salud</h2><p>Panel de administración</p><p id="bienvenidaUsuario" class="saludo-usuario" aria-live="polite"></p></div></div><nav><a href="index.html" onclick="cerrarSesion()">Salir</a></nav></header>
+<main class="contenedor">
+<section class="titulo-pagina"><h1>Menú de administración</h1><p>Selecciona una opción. Cada función tiene su propia ventana para que el sistema sea más ordenado.</p></section>
+<section class="admin-menu-grid">
+<a class="admin-menu-card" href="admin-citas.html"><span>📋</span><h2>Ver todas las citas</h2><p>Consultar, buscar e imprimir fichas reservadas.</p><strong>Entrar →</strong></a>
+<a class="admin-menu-card" href="admin-disponibilidad.html"><span>🗓️</span><h2>Horarios disponibles</h2><p>Ver los horarios libres y ocupados por médico y fecha; reprogramar o cancelar citas con justificación.</p><strong>Entrar →</strong></a>
+<a class="admin-menu-card" href="admin-medicos.html"><span>🩺</span><h2>Médicos y especialidades</h2><p>Agregar especialidades, registrar médicos, moverlos o retirarlos.</p><strong>Entrar →</strong></a>
+<a class="admin-menu-card" href="admin-cupos.html"><span>🎟️</span><h2>Configurar cupos</h2><p>Definir el límite de fichas por especialidad y fecha.</p><strong>Entrar →</strong></a>
+</section>
+</main><script src="script.js"></script></body></html>
