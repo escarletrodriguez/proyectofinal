@@ -1386,7 +1386,9 @@ function imprimirFicha(id) {
     </style></head><body><article class="ficha">
         <header><img src="logo.png" alt="Logo CNS"><div><h1>Caja Nacional de Salud</h1><h2>Comprobante de cita médica</h2><p>Ficha N.º ${escapar(cita.id)}</p></div></header>
         <h3>Datos del paciente</h3><section class="datos">
-            <div class="dato"><span class="etiqueta">Nombre completo</span><span class="valor">${escapar(nombreCompleto)}</span></div>
+            <div class="dato"><span class="etiqueta">Nombre</span><span class="valor">${escapar(paciente.nombre || nombreCompleto)}</span></div>
+            <div class="dato"><span class="etiqueta">Apellido paterno</span><span class="valor">${escapar(paciente.apellidoPaterno || "No registrado")}</span></div>
+            <div class="dato"><span class="etiqueta">Apellido materno</span><span class="valor">${escapar(paciente.apellidoMaterno || "No registrado")}</span></div>
             <div class="dato"><span class="etiqueta">Carnet de identidad</span><span class="valor">${escapar(carnet)}</span></div>
             <div class="dato"><span class="etiqueta">Fecha de nacimiento</span><span class="valor">${escapar(nacimiento)}</span></div>
             <div class="dato"><span class="etiqueta">Usuario de registro</span><span class="valor">${escapar(cita.usuario)}</span></div>
