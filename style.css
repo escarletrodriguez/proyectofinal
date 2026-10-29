@@ -1238,3 +1238,16 @@ tbody tr:hover {
         font-size: 12px;
     }
 }
+
+.estado-cancelado {
+    color: #a12d2d;
+    font-weight: 700;
+}
+.estado-ausente {
+    color: #925a12;
+    font-weight: 700;
+}
+.estado-atendida {
+    color: #167447;
+    font-weight: 700;
+}
