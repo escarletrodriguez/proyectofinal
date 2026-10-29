@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Administración - Caja Nacional de Salud</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="header-sistema">
+  <div class="header-logo"><img src="logo.png" alt="Logo"><div><h2>Caja Nacional de Salud</h2><p>Panel de administración</p><p id="bienvenidaUsuario" class="saludo-usuario" aria-live="polite"></p></div></div>
+  <nav><a href="admin.html">Menú principal</a><a href="index.html" onclick="cerrarSesion()">Salir</a></nav>
+</header>
+<main class="contenedor">
+<section class="titulo-pagina"><h1>Configurar cupos</h1><p>Define cuántas fichas pueden reservarse por especialidad en una fecha.</p></section>
+<section class="panel-control admin-seccion"><label for="cupoEspecialidad">Especialidad</label><select id="cupoEspecialidad"></select><label for="cupoFecha">Fecha</label><input id="cupoFecha" type="date"><label for="cupoLimite">Cantidad máxima de fichas</label><input id="cupoLimite" type="number" min="0" step="1" placeholder="Ej. 10"><div><button id="guardarCupo" type="button" class="boton-accion">Guardar cupo</button><button id="quitarCupo" type="button" class="boton-accion">Quitar límite</button></div><p id="estadoCupo" role="status" class="mensaje-admin"></p></section></main><script src="script.js"></script><script src="panel.js"></script></body></html>
