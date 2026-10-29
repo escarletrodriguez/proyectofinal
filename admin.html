@@ -32,6 +32,31 @@
                 <option>Sin asistencia</option>
             </select>
         </section>
+        <section class="panel-control" aria-labelledby="tituloGestionMedicos">
+            <h2 id="tituloGestionMedicos" style="width:100%">Gestionar especialidades y médicos</h2>
+            <label for="nuevaEspecialidad">Nueva especialidad</label>
+            <input id="nuevaEspecialidad" type="text" placeholder="Ej. Reumatología" maxlength="70">
+            <button id="agregarEspecialidad" type="button" class="boton-accion">Agregar especialidad</button>
+            <label for="gestionEspecialidad">Especialidad</label><select id="gestionEspecialidad"></select>
+            <label for="nombreNuevoMedico">Nombre del médico</label>
+            <input id="nombreNuevoMedico" type="text" placeholder="Ej. Dra. Ana Pérez" maxlength="100">
+            <button id="agregarMedico" type="button" class="boton-accion">Agregar médico</button>
+            <label for="medicoRetirar">Médico a retirar o mover</label><select id="medicoRetirar"></select>
+            <label for="especialidadDestino">Nueva especialidad del médico (opcional)</label><select id="especialidadDestino"></select>
+            <button id="moverMedico" type="button" class="boton-accion">Mover médico</button>
+            <button id="retirarMedico" type="button" class="boton-accion">Retirar médico</button>
+            <p id="estadoGestionMedicos" role="status" style="width:100%"></p>
+        </section>
+        <section class="panel-control" aria-labelledby="tituloDisponibilidad">
+            <h2 id="tituloDisponibilidad" style="width:100%">Disponibilidad por médico y fecha</h2>
+            <label for="disponibilidadMedico">Médico</label><select id="disponibilidadMedico"></select>
+            <label for="disponibilidadFecha">Fecha</label><input id="disponibilidadFecha" type="date">
+            <button id="consultarDisponibilidad" type="button" class="boton-accion">Consultar horarios</button>
+            <p id="resumenDisponibilidad" role="status" style="width:100%"></p>
+            <div class="tabla-contenedor" style="width:100%">
+                <table><thead><tr><th>Hora</th><th>Disponibilidad</th><th>Paciente / Ficha</th><th>Estado</th><th>Acción administrativa</th></tr></thead><tbody id="tablaDisponibilidad"></tbody></table>
+            </div>
+        </section>
         <section class="panel-control" aria-labelledby="tituloCupos">
             <h2 id="tituloCupos" style="width:100%">Configurar cupos de fichas</h2>
             <label for="cupoEspecialidad">Especialidad</label><select id="cupoEspecialidad"></select>
