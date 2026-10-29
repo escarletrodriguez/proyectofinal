@@ -322,6 +322,24 @@ localStorage.getItem(
     "nombreUsuario"
 );
 
+// Saludo personalizado para el usuario que inició sesión.
+function actualizarSaludoUsuario() {
+    const saludo = document.getElementById("bienvenidaUsuario");
+    if (!saludo || !usuarioActual || !usuarios[usuarioActual]) return;
+
+    const usuario = usuarios[usuarioActual];
+    if (usuario.rol === "medico") {
+        const nombreMedico = usuario.medico || usuario.nombre || usuarioActual;
+        const esDoctora = /^Dra\./i.test(nombreMedico);
+        saludo.textContent = (esDoctora ? "Bienvenida, " : "Bienvenido, ") + nombreMedico;
+    } else if (usuario.rol === "administrador") {
+        saludo.textContent = "Bienvenido, " + (usuario.nombre || "Administración");
+    } else {
+        saludo.textContent = "Bienvenido, " + usuarioActual;
+    }
+}
+actualizarSaludoUsuario();
+
 
 // ==========================================
 // CITAS DEL USUARIO ACTUAL
