@@ -1283,7 +1283,7 @@ if (tablaCitas) {
             else if (
 
                 cita.estado ===
-                "Atendida"
+                "Realizado (Atendido)"
 
             ) {
 
@@ -1291,6 +1291,10 @@ if (tablaCitas) {
                 claseEstado =
                 "estado-atendida";
 
+            } else if (cita.estado === "Cancelado") {
+                claseEstado = "estado-cancelado";
+            } else if (cita.estado === "Sin asistencia") {
+                claseEstado = "estado-ausente";
             }
 
 
