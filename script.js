@@ -585,72 +585,73 @@ if (nombreMedico) {
 
 
     // ==============================
-    // FECHA MÍNIMA
+    // FECHAS PERMITIDAS PARA SACAR FICHA
+    // De 08:00 a 16:59: hoy o mañana.
+    // Desde las 17:00 hasta antes de las 08:00: solo mañana.
     // ==============================
 
-    const hoy =
-    new Date();
+    function fechaLocalISO(fecha) {
+        return [
+            fecha.getFullYear(),
+            String(fecha.getMonth() + 1).padStart(2, "0"),
+            String(fecha.getDate()).padStart(2, "0")
+        ].join("-");
+    }
 
+    function obtenerRangoFechasPermitidas() {
+        const ahora = new Date();
+        const hoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+        const manana = new Date(hoy);
+        manana.setDate(manana.getDate() + 1);
 
-    const fechaMinima =
+        const fueraDeHorario = ahora.getHours() < 8 || ahora.getHours() >= 17;
+        return {
+            minima: fechaLocalISO(fueraDeHorario ? manana : hoy),
+            maxima: fechaLocalISO(manana),
+            soloManana: fueraDeHorario
+        };
+    }
 
-    hoy.getFullYear() +
+    function actualizarLimitesFecha() {
+        const rango = obtenerRangoFechasPermitidas();
+        fechaInput.min = rango.minima;
+        fechaInput.max = rango.maxima;
+        fechaInput.title = rango.soloManana
+            ? "Por el horario actual, solo puedes sacar ficha para mañana."
+            : "Puedes sacar ficha para hoy o mañana.";
+        return rango;
+    }
 
-    "-" +
-
-    String(
-        hoy.getMonth() + 1
-    ).padStart(2, "0")
-
-    +
-
-    "-" +
-
-    String(
-        hoy.getDate()
-    ).padStart(2, "0");
-
-
-    fechaInput.min =
-    fechaMinima;
-
+    actualizarLimitesFecha();
 
     // ==============================
     // CUANDO CAMBIA LA FECHA
     // ==============================
 
-    fechaInput.addEventListener(
+    fechaInput.addEventListener("change", function() {
+        const rango = actualizarLimitesFecha();
+        const fechaElegida = fechaInput.value;
 
-        "change",
-
-        function() {
-
-
-            fechaSeleccionada =
-            fechaInput.value;
-
-
-            horaSeleccionada =
-            null;
-
-
-            document
-            .getElementById(
-                "confirmacion"
-            )
-            .style.display =
-            "none";
-
-
-            mostrarHorarios();
-
+        if (!fechaElegida || fechaElegida < rango.minima || fechaElegida > rango.maxima) {
+            fechaInput.value = "";
+            fechaSeleccionada = null;
+            horaSeleccionada = null;
+            document.getElementById("confirmacion").style.display = "none";
+            document.getElementById("horarios").innerHTML =
+                '<p class="mensaje-fecha">📅 Selecciona hoy o mañana según el horario permitido.</p>';
+            alert(rango.soloManana
+                ? "A esta hora solo puedes sacar ficha para mañana."
+                : "Solo puedes sacar ficha para hoy o mañana. No se permiten fechas anteriores ni posteriores.");
+            return;
         }
 
-    );
+        fechaSeleccionada = fechaElegida;
+        horaSeleccionada = null;
+        document.getElementById("confirmacion").style.display = "none";
+        mostrarHorarios();
+    });
 
-
-    // No mostramos horarios hasta
-    // que el usuario seleccione fecha.
+    // No mostramos horarios hasta que el usuario seleccione una fecha permitida.
 
 }
 
@@ -1027,17 +1028,23 @@ function confirmarCita() {
     // ==============================
 
     if (!fecha) {
-
-
-        alert(
-            "Seleccione una fecha."
-        );
-
-
+        alert("Seleccione una fecha.");
         return;
-
     }
 
+    // Revalidar en el momento de enviar, por si cambió la hora o se editó el campo.
+    const rangoPermitido = obtenerRangoFechasPermitidas();
+    if (fecha < rangoPermitido.minima || fecha > rangoPermitido.maxima) {
+        alert(rangoPermitido.soloManana
+            ? "A esta hora solo puedes sacar ficha para mañana."
+            : "Solo puedes sacar ficha para hoy o mañana. No se permiten fechas anteriores ni posteriores.");
+        document.getElementById("fechaCita").value = "";
+        fechaSeleccionada = null;
+        horaSeleccionada = null;
+        document.getElementById("confirmacion").style.display = "none";
+        mostrarHorarios();
+        return;
+    }
 
     if (!horaSeleccionada) {
 
