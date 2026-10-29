@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Administración - Caja Nacional de Salud</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="header-sistema">
+  <div class="header-logo"><img src="logo.png" alt="Logo"><div><h2>Caja Nacional de Salud</h2><p>Panel de administración</p><p id="bienvenidaUsuario" class="saludo-usuario" aria-live="polite"></p></div></div>
+  <nav><a href="admin.html">Menú principal</a><a href="index.html" onclick="cerrarSesion()">Salir</a></nav>
+</header>
+<main class="contenedor">
+<section class="titulo-pagina"><h1>Disponibilidad y cambios de citas</h1><p>Selecciona un médico y una fecha para ver los horarios reservados y disponibles.</p></section>
+<section class="panel-control admin-seccion"><label for="disponibilidadMedico">Médico</label><select id="disponibilidadMedico"></select><label for="disponibilidadFecha">Fecha</label><input id="disponibilidadFecha" type="date"><button id="consultarDisponibilidad" type="button" class="boton-accion">Consultar horarios</button><p id="resumenDisponibilidad" role="status" class="mensaje-admin"></p></section>
+<div class="tabla-contenedor"><table><thead><tr><th>Hora</th><th>Disponibilidad</th><th>Paciente / Ficha</th><th>Estado</th><th>Acción administrativa</th></tr></thead><tbody id="tablaDisponibilidad"></tbody></table></div>
+<p class="nota-admin">Para cambiar o cancelar una ficha, el sistema pedirá una justificación. Se mantiene la regla de fechas permitidas para registrar fichas.</p></main><script src="script.js"></script><script src="panel.js"></script></body></html>
