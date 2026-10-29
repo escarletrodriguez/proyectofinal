@@ -678,7 +678,7 @@ function consultarCupo(especialidad, fecha) {
     const limite = configuracion[claveCupo(especialidad, fecha)];
     const asignadas = citasSistema.filter(cita =>
         cita.especialidad === especialidad && cita.fecha === fecha &&
-        cita.estado !== "Cancelado" && cita.estado !== "Cancelada"
+        !["Cancelado", "Cancelada", "Rechazado"].includes(cita.estado)
     ).length;
     return { limite: Number.isInteger(limite) && limite >= 0 ? limite : null, asignadas };
 }
@@ -1283,6 +1283,10 @@ if (tablaCitas) {
                 claseEstado =
                 "estado-atendida";
 
+            } else if (cita.estado === "Aceptado") {
+                claseEstado = "estado-atendida";
+            } else if (cita.estado === "Rechazado") {
+                claseEstado = "estado-cancelado";
             } else if (cita.estado === "Cancelado") {
                 claseEstado = "estado-cancelado";
             } else if (cita.estado === "Sin asistencia") {
