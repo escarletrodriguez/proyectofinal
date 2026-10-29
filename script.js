@@ -8,7 +8,7 @@
 // ESPECIALIDADES Y MÉDICOS
 // ==========================================
 
-const especialidadesMedicas = [
+const especialidadesIniciales = [
 
     {
         nombre: "Medicina General",
@@ -172,8 +172,16 @@ const especialidadesMedicas = [
         ]
     }
 
-];
+ ];
 
+// La administración puede guardar cambios en médicos y especialidades.
+let especialidadesMedicas;
+try {
+    const guardadas = JSON.parse(localStorage.getItem("especialidadesMedicas") || "null");
+    especialidadesMedicas = Array.isArray(guardadas) && guardadas.length ? guardadas : especialidadesIniciales;
+} catch (error) {
+    especialidadesMedicas = especialidadesIniciales;
+}
 
 // ==========================================
 // VARIABLES
@@ -194,12 +202,19 @@ let fechaSeleccionada = null;
 
 const usuarios = JSON.parse(localStorage.getItem("usuarios") || "{}");
 const cuentasDemo = {
-    admin_demo: {password: "Admin2026!", rol: "administrador", nombre: "Administración CNS"},
+    Angela_1702: {password: "170209", rol: "administrador", nombre: "Angela"},
     medico_demo: {password: "Medico2026!", rol: "medico", nombre: "Dra. María Fernández", medico: "Dra. María Fernández", especialidad: "Medicina General"}
 };
 Object.entries(cuentasDemo).forEach(([clave, datos]) => {
-    if (!usuarios[clave]) usuarios[clave] = datos;
+    if (clave === "Angela_1702") {
+        usuarios[clave] = {...(usuarios[clave] || {}), ...datos};
+    } else if (!usuarios[clave]) {
+        usuarios[clave] = datos;
+    }
 });
+// Migrar la cuenta administrativa anterior al nuevo acceso solicitado.
+if (usuarios.admin_demo?.rol === "administrador") delete usuarios.admin_demo;
+if (localStorage.getItem("nombreUsuario") === "admin_demo") localStorage.setItem("nombreUsuario", "Angela_1702");
 function crearUsuarioMedico(nombreMedico) {
     return nombreMedico
         .replace(/^Dra?\.\s*/i, "")
@@ -230,6 +245,9 @@ especialidadesMedicas.forEach(especialidad => {
     });
 });
 localStorage.setItem("usuarios", JSON.stringify(usuarios));
+if (!localStorage.getItem("especialidadesMedicas")) {
+    localStorage.setItem("especialidadesMedicas", JSON.stringify(especialidadesMedicas));
+}
 
 function rolActual() {
     const nombre = localStorage.getItem("nombreUsuario");
