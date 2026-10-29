@@ -1271,3 +1271,13 @@ tbody tr:hover {
     background: #e5f5e9;
     border-radius: 8px;
 }
+
+
+/* Menú administrativo organizado en ventanas separadas */
+.admin-menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;margin-top:25px}
+.admin-menu-card{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:28px;background:#fff;border:1px solid #dcebe0;border-radius:18px;box-shadow:0 8px 25px rgba(0,0,0,.07);text-decoration:none;color:#26352a;transition:transform .2s,box-shadow .2s}
+.admin-menu-card:hover{transform:translateY(-5px);box-shadow:0 14px 30px rgba(7,91,50,.14)}
+.admin-menu-card>span{font-size:34px}.admin-menu-card h2{color:#075b32;font-size:21px}.admin-menu-card p{line-height:1.55;color:#607067;flex:1}.admin-menu-card strong{color:#168a4b}
+.admin-seccion{display:block;max-width:850px;padding:28px;background:#fff;border:1px solid #e1eee4;box-shadow:0 8px 25px rgba(0,0,0,.06)}
+.admin-seccion h2{width:100%;color:#075b32;margin:10px 0 16px}.admin-seccion label{display:block;font-weight:700;width:100%;margin:12px 0 5px}.admin-seccion input,.admin-seccion select{width:100%;max-width:100%;padding:12px;border:1px solid #b8d8c4;border-radius:8px;background:#fbfefc;font:inherit}.admin-seccion .boton-accion{margin-top:14px;padding:10px 16px;background:#08783e}.admin-seccion .boton-peligro{background:#a83232}.admin-seccion hr{border:0;border-top:1px solid #e1eee4;margin:26px 0}.mensaje-admin{margin-top:18px;color:#075b32;font-weight:700;line-height:1.5}.nota-admin{margin-top:18px;padding:14px;background:#eaf6ed;border-radius:10px;color:#315a3e;line-height:1.5}.admin-filtro{background:#fff;border:1px solid #e1eee4}.admin-filtro label{font-weight:700}.admin-filtro input,.admin-filtro select{max-width:100%}
+@media(max-width:700px){.admin-menu-grid{grid-template-columns:1fr}.admin-seccion{padding:18px}}
