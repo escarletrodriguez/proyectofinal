@@ -837,16 +837,23 @@ nav a:hover {
 /* HORA DISPONIBLE */
 
 .disponible {
-
     background: #e3f8ec;
-
     color: #167244;
-
-    border:
-        1px solid
-        #bcebd0;
-
+    border: 1px solid #bcebd0;
     cursor: pointer;
+}
+
+.hora.seleccionada {
+    background: #08783e !important;
+    color: #ffffff !important;
+    border: 2px solid #04572d !important;
+    box-shadow: 0 0 0 3px rgba(8, 120, 62, 0.22);
+    transform: translateY(-2px);
+}
+
+.hora.seleccionada strong,
+.hora.seleccionada span {
+    color: #ffffff !important;
 }
 
 
