@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Administración - Caja Nacional de Salud</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header class="header-sistema">
+  <div class="header-logo"><img src="logo.png" alt="Logo"><div><h2>Caja Nacional de Salud</h2><p>Panel de administración</p><p id="bienvenidaUsuario" class="saludo-usuario" aria-live="polite"></p></div></div>
+  <nav><a href="admin.html">Menú principal</a><a href="index.html" onclick="cerrarSesion()">Salir</a></nav>
+</header>
+<main class="contenedor">
+<section class="titulo-pagina"><h1>Médicos y especialidades</h1><p>Administra el directorio médico. Las fichas históricas se conservan.</p></section>
+<section class="panel-control admin-seccion" aria-labelledby="tituloGestionMedicos"><h2 id="tituloGestionMedicos">Agregar una especialidad</h2><label for="nuevaEspecialidad">Nombre de la especialidad</label><input id="nuevaEspecialidad" type="text" placeholder="Ej. Reumatología" maxlength="70"><button id="agregarEspecialidad" type="button" class="boton-accion">Agregar especialidad</button><hr>
+<h2>Agregar un médico</h2><label for="gestionEspecialidad">Especialidad del médico</label><select id="gestionEspecialidad"></select><label for="nombreNuevoMedico">Nombre completo (Dr. o Dra.)</label><input id="nombreNuevoMedico" type="text" placeholder="Ej. Dra. Ana Pérez" maxlength="100"><button id="agregarMedico" type="button" class="boton-accion">Agregar médico</button><hr>
+<h2>Mover un médico a otra especialidad</h2><label for="medicoRetirar">Médico</label><select id="medicoRetirar"></select><label for="especialidadDestino">Especialidad de destino</label><select id="especialidadDestino"></select><button id="moverMedico" type="button" class="boton-accion">Mover médico</button><hr><h2>Retirar un médico</h2><p>El médico dejará de aparecer para nuevas reservas; las fichas antiguas se conservan.</p><button id="retirarMedico" type="button" class="boton-accion boton-peligro">Retirar médico seleccionado</button><p id="estadoGestionMedicos" role="status" class="mensaje-admin"></p></section></main><script src="script.js"></script><script src="panel.js"></script></body></html>
