@@ -195,10 +195,36 @@ let fechaSeleccionada = null;
 const usuarios = JSON.parse(localStorage.getItem("usuarios") || "{}");
 const cuentasDemo = {
     admin_demo: {password: "Admin2026!", rol: "administrador", nombre: "Administración CNS"},
-    medico_demo: {password: "Medico2026!", rol: "medico", nombre: "Dra. María Fernández", medico: "Dra. María Fernández"}
+    medico_demo: {password: "Medico2026!", rol: "medico", nombre: "Dra. María Fernández", medico: "Dra. María Fernández", especialidad: "Medicina General"}
 };
 Object.entries(cuentasDemo).forEach(([clave, datos]) => {
     if (!usuarios[clave]) usuarios[clave] = datos;
+});
+function crearUsuarioMedico(nombreMedico) {
+    return nombreMedico
+        .replace(/^Dra?\.\s*/i, "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, ".")
+        .replace(/^\.|\.$/g, "");
+}
+especialidadesMedicas.forEach(especialidad => {
+    especialidad.medicos.forEach(nombreMedico => {
+        const usuarioMedico = crearUsuarioMedico(nombreMedico);
+        if (!usuarios[usuarioMedico]) {
+            usuarios[usuarioMedico] = {
+                password: "Medico2026!",
+                rol: "medico",
+                nombre: nombreMedico,
+                medico: nombreMedico,
+                especialidad: especialidad.nombre
+            };
+        } else if (usuarios[usuarioMedico].rol === "medico") {
+            usuarios[usuarioMedico].medico = nombreMedico;
+            usuarios[usuarioMedico].especialidad = especialidad.nombre;
+        }
+    });
 });
 localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
@@ -229,17 +255,37 @@ if (formularioLogin) {
 }
 const formularioRegistro = document.getElementById("formularioRegistro");
 if (formularioRegistro) {
+    const fechaNacimientoInput = document.getElementById("fechaNacimiento");
+    if (fechaNacimientoInput) {
+        const hoy = new Date();
+        fechaNacimientoInput.max = [hoy.getFullYear(), String(hoy.getMonth() + 1).padStart(2, "0"), String(hoy.getDate()).padStart(2, "0")].join("-");
+    }
     formularioRegistro.addEventListener("submit", function(evento) {
         evento.preventDefault();
-        const nombre = document.getElementById("usuario").value.trim();
+        const nombreUsuario = document.getElementById("usuario").value.trim();
         const clave = document.getElementById("password").value;
         const confirmar = document.getElementById("confirmarPassword").value;
-        if (nombre.length < 3 || clave.length < 6) return alert("El usuario debe tener al menos 3 caracteres y la contraseña 6.");
+        const datosPaciente = {
+            nombre: document.getElementById("nombre").value.trim(),
+            apellidoPaterno: document.getElementById("apellidoPaterno").value.trim(),
+            apellidoMaterno: document.getElementById("apellidoMaterno").value.trim(),
+            carnet: document.getElementById("carnet").value.trim(),
+            fechaNacimiento: document.getElementById("fechaNacimiento").value
+        };
+        if (nombreUsuario.length < 3 || clave.length < 6) return alert("El usuario debe tener al menos 3 caracteres y la contraseña 6.");
+        if (Object.values(datosPaciente).some(valor => !valor)) return alert("Complete todos los datos obligatorios del paciente.");
         if (clave !== confirmar) return alert("Las contraseñas no coinciden.");
-        if (usuarios[nombre]) return alert("El usuario ya existe.");
-        usuarios[nombre] = {password: clave, rol: "paciente", fechaRegistro: new Date().toLocaleDateString()};
+        if (usuarios[nombreUsuario]) return alert("El usuario ya existe.");
+        if (Object.values(usuarios).some(usuario => usuario.carnet && usuario.carnet === datosPaciente.carnet)) return alert("Ya existe una cuenta registrada con ese carnet de identidad.");
+        if (datosPaciente.fechaNacimiento > new Date().toISOString().slice(0, 10)) return alert("La fecha de nacimiento no puede ser futura.");
+        usuarios[nombreUsuario] = {
+            ...datosPaciente,
+            password: clave,
+            rol: "paciente",
+            fechaRegistro: new Date().toLocaleDateString()
+        };
         localStorage.setItem("usuarios", JSON.stringify(usuarios));
-        iniciarSesion(nombre);
+        iniciarSesion(nombreUsuario);
     });
 }
 function cerrarSesion() {
@@ -319,11 +365,34 @@ JSON.parse(
 || [];
 
 
-// Migración de citas antiguas al registro general.
+// Migración de citas antiguas al registro general y normalización de estados.
 let huboMigracion = false;
 citasSistema = citasSistema.map((cita, indice) => {
     if (!cita.id) {
         cita.id = "ANT-" + String(indice + 1).padStart(5, "0");
+        huboMigracion = true;
+    }
+    const estadosAntiguos = {
+        "Validada": "Pendiente",
+        "Atendida": "Realizado (Atendido)",
+        "Realizada": "Realizado (Atendido)",
+        "Cancelada": "Cancelado",
+        "No asistió": "Sin asistencia",
+        "Sin asistencia": "Sin asistencia"
+    };
+    if (estadosAntiguos[cita.estado]) {
+        cita.estado = estadosAntiguos[cita.estado];
+        huboMigracion = true;
+    }
+    if (!cita.paciente && cita.usuario && usuarios[cita.usuario]) {
+        const u = usuarios[cita.usuario];
+        cita.paciente = {
+            nombre: u.nombre || "",
+            apellidoPaterno: u.apellidoPaterno || "",
+            apellidoMaterno: u.apellidoMaterno || "",
+            carnet: u.carnet || "",
+            fechaNacimiento: u.fechaNacimiento || ""
+        };
         huboMigracion = true;
     }
     return cita;
@@ -609,7 +678,7 @@ function consultarCupo(especialidad, fecha) {
     const limite = configuracion[claveCupo(especialidad, fecha)];
     const asignadas = citasSistema.filter(cita =>
         cita.especialidad === especialidad && cita.fecha === fecha &&
-        cita.estado !== "Cancelada"
+        cita.estado !== "Cancelado" && cita.estado !== "Cancelada"
     ).length;
     return { limite: Number.isInteger(limite) && limite >= 0 ? limite : null, asignadas };
 }
@@ -636,6 +705,7 @@ function horaOcupada(
 
         cita.hora === hora &&
 
+        cita.estado !== "Cancelado" &&
         cita.estado !== "Cancelada"
 
     );
@@ -1051,12 +1121,20 @@ function confirmarCita() {
     // CREAR NUEVA CITA
     // ==============================
 
+    const datosCuentaPaciente = usuarios[usuarioActual] || {};
     const nuevaCita = {
 
         id: "F-" + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase(),
 
-        usuario:
-        usuarioActual,
+        usuario: usuarioActual,
+
+        paciente: {
+            nombre: datosCuentaPaciente.nombre || "",
+            apellidoPaterno: datosCuentaPaciente.apellidoPaterno || "",
+            apellidoMaterno: datosCuentaPaciente.apellidoMaterno || "",
+            carnet: datosCuentaPaciente.carnet || "",
+            fechaNacimiento: datosCuentaPaciente.fechaNacimiento || ""
+        },
 
         fecha:
         fecha,
@@ -1278,7 +1356,7 @@ function cancelarMiCita(id) {
     const cita = citasSistema.find(c => c.id === id && c.usuario === usuarioActual);
     if (!cita || cita.estado !== "Pendiente") return alert("La cita no puede cancelarse.");
     if (!confirm("¿Cancelar esta cita?")) return;
-    cita.estado = "Cancelada";
+    cita.estado = "Cancelado";
     guardarCitas();
     window.location.reload();
 }
@@ -1286,8 +1364,44 @@ function imprimirFicha(id) {
     const cita = citasSistema.find(c => c.id === id);
     if (!cita) return alert("Ficha no encontrada.");
     if (rolActual() === "paciente" && cita.usuario !== usuarioActual) return;
-    const ventana = window.open("", "_blank", "width=680,height=700");
+    const ventana = window.open("", "_blank", "width=760,height=850");
     if (!ventana) return alert("Se debe permitir la ventana emergente para imprimir.");
-    ventana.document.write(`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Ficha ${escapar(cita.id)}</title><style>body{font-family:Arial,sans-serif;margin:45px;line-height:1.8}h1{font-size:22px}hr{border:0;border-top:1px solid #aaa}button{padding:12px}</style></head><body><h1>Caja Nacional de Salud</h1><h2>Ficha de cita médica (demostración)</h2><hr><p><strong>Número:</strong> ${escapar(cita.id)}</p><p><strong>Paciente:</strong> ${escapar(cita.usuario)}</p><p><strong>Médico:</strong> ${escapar(cita.medico)}</p><p><strong>Especialidad:</strong> ${escapar(cita.especialidad)}</p><p><strong>Fecha:</strong> ${escapar(cita.fecha)}</p><p><strong>Hora:</strong> ${escapar(cita.hora)}</p><p><strong>Estado:</strong> ${escapar(cita.estado)}</p><hr><p>Comprobante de uso académico. No válido para atención real.</p><button onclick="window.print()">Imprimir ficha</button></body></html>`);
+    const paciente = cita.paciente || {};
+    const nombreCompleto = [paciente.nombre, paciente.apellidoPaterno, paciente.apellidoMaterno].filter(Boolean).join(" ") || cita.usuario || "Paciente";
+    const carnet = paciente.carnet || "No registrado";
+    const nacimiento = paciente.fechaNacimiento || "No registrado";
+    const estado = cita.estado || "Pendiente";
+    ventana.document.write(`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ficha ${escapar(cita.id)}</title><style>
+        *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#23352a;margin:0;padding:32px;background:#fff;line-height:1.5}
+        .ficha{max-width:720px;margin:auto;border:2px solid #167447;border-radius:12px;padding:28px}
+        header{display:flex;align-items:center;gap:16px;border-bottom:2px solid #167447;padding-bottom:16px;margin-bottom:20px}
+        header img{width:72px;height:72px;object-fit:contain}h1{font-size:22px;margin:0;color:#11663d}h2{font-size:19px;margin:8px 0 0}
+        .aviso{background:#edf7f0;padding:10px;border-radius:6px;font-size:13px}
+        .datos{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dato{border:1px solid #d8e5dc;border-radius:6px;padding:10px;overflow-wrap:anywhere}
+        .etiqueta{display:block;font-size:11px;text-transform:uppercase;color:#52705d;font-weight:bold;margin-bottom:4px}
+        .valor{font-weight:600}.estado{display:inline-block;padding:5px 10px;border-radius:18px;background:#e5f3e9}
+        .acciones{margin-top:24px;text-align:center}button{background:#167447;color:white;border:0;border-radius:6px;padding:11px 18px;font-size:14px;cursor:pointer}
+        @media print{body{padding:0}.ficha{border:1px solid #167447;border-radius:0}.acciones{display:none}}
+        @media(max-width:520px){body{padding:10px}.ficha{padding:14px}.datos{grid-template-columns:1fr}}
+    </style></head><body><article class="ficha">
+        <header><img src="logo.png" alt="Logo CNS"><div><h1>Caja Nacional de Salud</h1><h2>Comprobante de cita médica</h2><p>Ficha N.º ${escapar(cita.id)}</p></div></header>
+        <h3>Datos del paciente</h3><section class="datos">
+            <div class="dato"><span class="etiqueta">Nombre completo</span><span class="valor">${escapar(nombreCompleto)}</span></div>
+            <div class="dato"><span class="etiqueta">Carnet de identidad</span><span class="valor">${escapar(carnet)}</span></div>
+            <div class="dato"><span class="etiqueta">Fecha de nacimiento</span><span class="valor">${escapar(nacimiento)}</span></div>
+            <div class="dato"><span class="etiqueta">Usuario de registro</span><span class="valor">${escapar(cita.usuario)}</span></div>
+        </section>
+        <h3>Datos de la cita</h3><section class="datos">
+            <div class="dato"><span class="etiqueta">Médico</span><span class="valor">${escapar(cita.medico)}</span></div>
+            <div class="dato"><span class="etiqueta">Especialidad</span><span class="valor">${escapar(cita.especialidad)}</span></div>
+            <div class="dato"><span class="etiqueta">Fecha de atención</span><span class="valor">${escapar(cita.fecha)}</span></div>
+            <div class="dato"><span class="etiqueta">Hora</span><span class="valor">${escapar(cita.hora)}</span></div>
+            <div class="dato"><span class="etiqueta">Motivo de consulta</span><span class="valor">${escapar(cita.motivo || "No especificado")}</span></div>
+            <div class="dato"><span class="etiqueta">Estado de la ficha</span><span class="estado">${escapar(estado)}</span></div>
+        </section>
+        <p class="aviso">Comprobante de uso académico. No válido para atención médica real.</p>
+        <div class="acciones"><button onclick="window.print()">Imprimir ficha</button></div>
+    </article></body></html>`);
     ventana.document.close();
 }
+
