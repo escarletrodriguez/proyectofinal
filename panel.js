@@ -2,7 +2,7 @@
 const tablaPanel = document.getElementById("tablaPanel");
 const buscarCita = document.getElementById("buscarCita");
 const filtroEstado = document.getElementById("filtroEstado");
-const ESTADOS_FICHA = ["Pendiente", "Realizado (Atendido)", "Cancelado", "Sin asistencia"];
+const ESTADOS_FICHA = ["Pendiente", "Aceptado", "Rechazado", "Realizado (Atendido)", "Cancelado", "Sin asistencia"];
 
 function actualizarEstado(id, estado) {
     const cita = citasSistema.find(c => c.id === id);
@@ -37,11 +37,13 @@ function mostrarPanel() {
     let citas = citasSistema.filter(c => rol === "administrador" || (rol === "medico" && c.medico === usuario.medico));
     const total = citas.length;
     const pendientes = citas.filter(c => c.estado === "Pendiente").length;
+    const aceptadas = citas.filter(c => c.estado === "Aceptado").length;
+    const rechazadas = citas.filter(c => c.estado === "Rechazado").length;
     const realizadas = citas.filter(c => c.estado === "Realizado (Atendido)").length;
     const canceladas = citas.filter(c => c.estado === "Cancelado").length;
     const ausentes = citas.filter(c => c.estado === "Sin asistencia").length;
     const resumen = document.getElementById("resumenPanel");
-    if (resumen) resumen.textContent = `Total: ${total} | Pendientes: ${pendientes} | Realizadas: ${realizadas} | Canceladas: ${canceladas} | Sin asistencia: ${ausentes}`;
+    if (resumen) resumen.textContent = `Total: ${total} | Pendientes: ${pendientes} | Aceptadas: ${aceptadas} | Rechazadas: ${rechazadas} | Realizadas: ${realizadas} | Canceladas: ${canceladas} | Sin asistencia: ${ausentes}`;
 
     const q = (buscarCita?.value || "").toLocaleLowerCase().trim();
     const estado = filtroEstado?.value || "";
