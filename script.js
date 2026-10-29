@@ -807,13 +807,22 @@ function mostrarHorarios() {
     });
 
 
-    contenedor.innerHTML =
-    "";
+    contenedor.innerHTML = "";
 
+    // Mostrar al paciente el cupo configurado por administración.
+    const cupoActual = consultarCupo(especialidadSeleccionada, fechaSeleccionada);
+    if (cupoActual.limite !== null) {
+        const avisoCupos = document.createElement("p");
+        avisoCupos.className = "mensaje-cupos";
+        avisoCupos.style.cssText = "grid-column: 1 / -1; width: 100%; box-sizing: border-box; padding: 12px 16px; margin: 0 0 12px; border-radius: 10px; background: #e8f5ec; color: #17633b; font-weight: 600;";
+        const restantes = Math.max(0, cupoActual.limite - cupoActual.asignadas);
+        avisoCupos.textContent = restantes > 0
+            ? `🎫 Cupos disponibles para ${especialidadSeleccionada}: ${restantes} de ${cupoActual.limite} fichas.`
+            : `⛔ Cupos agotados para ${especialidadSeleccionada}: ${cupoActual.asignadas} de ${cupoActual.limite}. Selecciona otra fecha.`;
+        contenedor.appendChild(avisoCupos);
+    }
 
     if (cupoAgotado(especialidadSeleccionada, fechaSeleccionada)) {
-        const cupo = consultarCupo(especialidadSeleccionada, fechaSeleccionada);
-        contenedor.textContent = `Cupos agotados para esta especialidad y fecha (${cupo.asignadas} de ${cupo.limite}). Seleccione otra fecha.`;
         return;
     }
 
