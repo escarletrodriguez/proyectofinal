@@ -1258,3 +1258,16 @@ tbody tr:hover {
     color: #167447;
     font-weight: 700;
 }
+
+
+/* Saludo del usuario que inició sesión */
+.saludo-usuario {
+    color: #08783e;
+    font-weight: 700;
+    font-size: 14px;
+    margin-top: 5px;
+    padding: 5px 10px;
+    width: fit-content;
+    background: #e5f5e9;
+    border-radius: 8px;
+}
