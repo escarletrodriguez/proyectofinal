@@ -1,106 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de pacientes</title>
-
     <link rel="stylesheet" href="style.css">
-
 </head>
-
-
 <body class="pagina-login">
-
-
     <div class="login-contenedor">
-
-
-        <img
-            src="logo.png"
-            class="logo-login"
-            alt="Logo"
-        >
-
-
+        <img src="logo.png" class="logo-login" alt="Logo Caja Nacional de Salud">
         <h1>Caja Nacional de Salud</h1>
-
-
         <h2>Registro de pacientes</h2>
-
-
         <form id="formularioRegistro">
-
-
-            <label for="usuario">
-                Usuario
-            </label>
-
-
-            <input
-                type="text"
-                id="usuario"
-                placeholder="Ingrese su usuario"
-                required
-            >
-
-
-            <label for="password">
-                Contraseña
-            </label>
-
-
-            <input
-                type="password"
-                id="password"
-                placeholder="Ingrese su contraseña"
-                required
-            >
-
-
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" placeholder="Ingrese su nombre" required autocomplete="given-name">
+            <label for="apellidoPaterno">Apellido paterno</label>
+            <input type="text" id="apellidoPaterno" placeholder="Ingrese su apellido paterno" required autocomplete="family-name">
+            <label for="apellidoMaterno">Apellido materno</label>
+            <input type="text" id="apellidoMaterno" placeholder="Ingrese su apellido materno" required>
+            <label for="carnet">Carnet de identidad</label>
+            <input type="text" id="carnet" placeholder="Ingrese su CI" required inputmode="numeric" maxlength="15">
+            <label for="fechaNacimiento">Fecha de nacimiento</label>
+            <input type="date" id="fechaNacimiento" required>
+            <label for="usuario">Usuario</label>
+            <input type="text" id="usuario" placeholder="Cree su usuario" required minlength="3" autocomplete="username">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" placeholder="Cree su contraseña" required minlength="6" autocomplete="new-password">
             <label for="confirmarPassword">Confirmar contraseña</label>
-            <input type="password" id="confirmarPassword" required minlength="6">
-            <button
-                type="submit"
-                class="boton-login"
-            >
-
-                Registrarse
-
-            </button>
-
-
+            <input type="password" id="confirmarPassword" required minlength="6" autocomplete="new-password">
+            <button type="submit" class="boton-login">Registrarse</button>
         </form>
         <p class="texto-login">¿Ya tiene cuenta? <a href="login.html">Ingresar</a></p>
-
-
-        <p class="texto-login">
-
-            Sistema demostrativo de citas médicas
-
-        </p>
-
-
-        <a
-            href="index.html"
-            class="volver"
-        >
-
-            ← Volver al inicio
-
-        </a>
-
-
+        <p class="texto-login">Sistema demostrativo de citas médicas</p>
+        <a href="index.html" class="volver">← Volver al inicio</a>
     </div>
-
-
     <script src="script.js"></script>
-
 </body>
 </html>
