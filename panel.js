@@ -1,57 +1,106 @@
-// Paneles de administración y personal médico.
+// Paneles separados para administración y personal médico.
 const tablaPanel = document.getElementById("tablaPanel");
 const buscarCita = document.getElementById("buscarCita");
 const filtroEstado = document.getElementById("filtroEstado");
+const ESTADOS_FICHA = ["Pendiente", "Realizado (Atendido)", "Cancelado", "Sin asistencia"];
+
 function actualizarEstado(id, estado) {
     const cita = citasSistema.find(c => c.id === id);
-    if (!cita) return;
+    if (!cita || !ESTADOS_FICHA.includes(estado)) return;
     const rol = rolActual();
-    if (rol === "administrador" && estado === "Validada" && cita.estado === "Pendiente") cita.estado = estado;
-    else if (rol === "administrador" && estado === "No asistió" && cita.estado === "Pendiente") cita.estado = estado;
-    else if (rol === "medico" && ["Atendida", "No asistió"].includes(estado) && cita.estado === "Validada" && cita.medico === usuarios[usuarioActual].medico) cita.estado = estado;
-    else return alert("Transición no permitida.");
+    const usuario = usuarios[usuarioActual] || {};
+    if (rol === "administrador") {
+        cita.estado = estado;
+    } else if (rol === "medico" && cita.medico === usuario.medico) {
+        cita.estado = estado;
+    } else {
+        alert("No tienes permiso para cambiar el estado de esta ficha.");
+        return;
+    }
     guardarCitas();
     mostrarPanel();
 }
-function confirmarInasistencia(id) {
-    if (confirm("¿Confirmar que el paciente no asistió? Esta acción conservará la ficha en el historial.")) {
-        actualizarEstado(id, "No asistió");
-    }
+
+function nombreCompletoPaciente(cita) {
+    const p = cita.paciente || {};
+    return [p.nombre, p.apellidoPaterno, p.apellidoMaterno].filter(Boolean).join(" ") || cita.usuario || "Paciente";
 }
+
 function mostrarPanel() {
     if (!tablaPanel) return;
     const rol = rolActual();
-    let citas = citasSistema.filter(c => rol === "administrador" || c.medico === usuarios[usuarioActual].medico);
+    const usuario = usuarios[usuarioActual] || {};
+    if (rol === "medico") {
+        const titulo = document.getElementById("tituloAgendaMedica");
+        if (titulo) titulo.textContent = "Agenda de " + (usuario.medico || usuario.nombre || "médico");
+    }
+    let citas = citasSistema.filter(c => rol === "administrador" || (rol === "medico" && c.medico === usuario.medico));
     const total = citas.length;
     const pendientes = citas.filter(c => c.estado === "Pendiente").length;
-    const validadas = citas.filter(c => c.estado === "Validada").length;
-    const atendidas = citas.filter(c => c.estado === "Atendida").length;
-    const ausentes = citas.filter(c => c.estado === "No asistió").length;
-    document.getElementById("resumenPanel").textContent = `Total: ${total} | Pendientes: ${pendientes} | Validadas: ${validadas} | Atendidas: ${atendidas} | No asistió: ${ausentes}`;
-    const q = buscarCita.value.toLocaleLowerCase().trim();
-    const estado = filtroEstado.value;
-    citas = citas.filter(c => (!estado || c.estado === estado) && (!q || [c.id,c.usuario,c.medico,c.especialidad].some(v => String(v || "").toLocaleLowerCase().includes(q))));
-    citas.sort((a,b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
+    const realizadas = citas.filter(c => c.estado === "Realizado (Atendido)").length;
+    const canceladas = citas.filter(c => c.estado === "Cancelado").length;
+    const ausentes = citas.filter(c => c.estado === "Sin asistencia").length;
+    const resumen = document.getElementById("resumenPanel");
+    if (resumen) resumen.textContent = `Total: ${total} | Pendientes: ${pendientes} | Realizadas: ${realizadas} | Canceladas: ${canceladas} | Sin asistencia: ${ausentes}`;
+
+    const q = (buscarCita?.value || "").toLocaleLowerCase().trim();
+    const estado = filtroEstado?.value || "";
+    citas = citas.filter(c => {
+        const paciente = nombreCompletoPaciente(c);
+        const ci = (c.paciente || {}).carnet || "";
+        return (!estado || c.estado === estado) &&
+            (!q || [c.id, paciente, ci, c.medico, c.especialidad].some(v => String(v || "").toLocaleLowerCase().includes(q)));
+    });
+    citas.sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
     tablaPanel.innerHTML = "";
-    if (!citas.length) { tablaPanel.innerHTML = '<tr><td colspan="8">No se encontraron citas.</td></tr>'; return; }
+    if (!citas.length) {
+        tablaPanel.innerHTML = '<tr><td colspan="' + (rol === "administrador" ? "9" : "8") + '">No se encontraron citas.</td></tr>';
+        return;
+    }
+
     citas.forEach(c => {
         const fila = document.createElement("tr");
-        [c.id,c.usuario,c.fecha,c.hora,c.medico,c.especialidad,c.estado].forEach(valor => { const td = document.createElement("td"); td.textContent = valor || ""; fila.appendChild(td); });
+        const paciente = c.paciente || {};
+        const nombre = nombreCompletoPaciente(c);
+        const valores = rol === "administrador"
+            ? [c.id, nombre, paciente.carnet || "", c.fecha, c.hora, c.medico, c.especialidad]
+            : [c.id, nombre, paciente.carnet || "", c.fecha, c.hora, c.especialidad];
+        valores.forEach(valor => {
+            const td = document.createElement("td");
+            td.textContent = valor || "";
+            fila.appendChild(td);
+        });
+        const celdaEstado = document.createElement("td");
+        const selector = document.createElement("select");
+        selector.className = "selector-estado-ficha";
+        selector.setAttribute("aria-label", "Estado de ficha " + c.id);
+        ESTADOS_FICHA.forEach(estadoDisponible => {
+            const opcion = document.createElement("option");
+            opcion.value = estadoDisponible;
+            opcion.textContent = estadoDisponible;
+            selector.appendChild(opcion);
+        });
+        selector.value = ESTADOS_FICHA.includes(c.estado) ? c.estado : "Pendiente";
+        selector.addEventListener("change", () => actualizarEstado(c.id, selector.value));
+        celdaEstado.appendChild(selector);
+        fila.appendChild(celdaEstado);
+
         const acciones = document.createElement("td");
-        function boton(texto, accion) { const b = document.createElement("button"); b.type = "button"; b.className = "boton-accion"; b.textContent = texto; b.addEventListener("click", accion); acciones.appendChild(b); }
-        boton("Imprimir", () => imprimirFicha(c.id));
-        if (rol === "administrador" && c.estado === "Pendiente") {
-            boton("Validar llegada", () => actualizarEstado(c.id,"Validada"));
-            boton("No asistió", () => confirmarInasistencia(c.id));
-        }
-        if (rol === "medico" && c.estado === "Validada") {
-            boton("Marcar atendida", () => actualizarEstado(c.id,"Atendida"));
-            boton("No asistió", () => confirmarInasistencia(c.id));
-        }
-        fila.appendChild(acciones); tablaPanel.appendChild(fila);
+        const boton = document.createElement("button");
+        boton.type = "button";
+        boton.className = "boton-accion";
+        boton.textContent = "Imprimir";
+        boton.addEventListener("click", () => imprimirFicha(c.id));
+        acciones.appendChild(boton);
+        fila.appendChild(acciones);
+        tablaPanel.appendChild(fila);
     });
 }
-if (tablaPanel) { buscarCita.addEventListener("input",mostrarPanel); filtroEstado.addEventListener("change",mostrarPanel); mostrarPanel(); }
+if (tablaPanel) {
+    buscarCita?.addEventListener("input", mostrarPanel);
+    filtroEstado?.addEventListener("change", mostrarPanel);
+    mostrarPanel();
+}
 
 // Configuración de cupos exclusiva del panel administrativo.
 const selectorCupo = document.getElementById("cupoEspecialidad");

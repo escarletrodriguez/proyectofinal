@@ -1211,3 +1211,43 @@ tbody tr:hover {
 
 }
 .panel-control {padding:20px;display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:#f4f7fa;border-radius:12px;margin-bottom:18px}.panel-control #resumenPanel{width:100%;font-weight:700}.panel-control input,.panel-control select{padding:10px;border:1px solid #b8c4ce;border-radius:6px}.boton-accion{margin:3px;padding:7px 10px;border:0;border-radius:6px;background:#1169a3;color:white;cursor:pointer}.tabla-contenedor{overflow-x:auto}
+
+
+/* Selectores de estado de las fichas médicas */
+.selector-estado-ficha {
+    width: 100%;
+    min-width: 145px;
+    padding: 9px 10px;
+    border: 1px solid #b8d8c4;
+    border-radius: 7px;
+    background: #f7fcf8;
+    color: #234b34;
+    font: inherit;
+    cursor: pointer;
+}
+.selector-estado-ficha:focus {
+    outline: 2px solid #2b8b57;
+    outline-offset: 2px;
+}
+#tablaPanel td {
+    vertical-align: middle;
+}
+@media (max-width: 700px) {
+    .selector-estado-ficha {
+        min-width: 130px;
+        font-size: 12px;
+    }
+}
+
+.estado-cancelado {
+    color: #a12d2d;
+    font-weight: 700;
+}
+.estado-ausente {
+    color: #925a12;
+    font-weight: 700;
+}
+.estado-atendida {
+    color: #167447;
+    font-weight: 700;
+}
