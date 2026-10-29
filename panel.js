@@ -54,7 +54,7 @@ function mostrarPanel() {
     citas.sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
     tablaPanel.innerHTML = "";
     if (!citas.length) {
-        tablaPanel.innerHTML = '<tr><td colspan="9">No se encontraron citas.</td></tr>';
+        tablaPanel.innerHTML = '<tr><td colspan="' + (rol === "administrador" ? "9" : "8") + '">No se encontraron citas.</td></tr>';
         return;
     }
 
