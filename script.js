@@ -705,8 +705,7 @@ function horaOcupada(
 
         cita.hora === hora &&
 
-        cita.estado !== "Cancelado" &&
-        cita.estado !== "Cancelada"
+        !["Cancelado", "Cancelada", "Rechazado"].includes(cita.estado)
 
     );
 
@@ -757,23 +756,15 @@ function mostrarHorarios() {
     }
 
 
-    const horas = [
-
-        "08:00",
-
-        "09:00",
-
-        "10:00",
-
-        "11:00",
-
-        "14:00",
-
-        "15:00",
-
-        "16:00"
-
-    ];
+    // Generar turnos cada 15 minutos: mañana y tarde.
+    const horas = [];
+    [[8, 12], [14, 17]].forEach(([inicio, fin]) => {
+        for (let minutos = inicio * 60; minutos < fin * 60; minutos += 15) {
+            const hh = String(Math.floor(minutos / 60)).padStart(2, "0");
+            const mm = String(minutos % 60).padStart(2, "0");
+            horas.push(`${hh}:${mm}`);
+        }
+    });
 
 
     contenedor.innerHTML =
@@ -798,8 +789,8 @@ function mostrarHorarios() {
             );
 
 
-            elemento.className =
-            "hora";
+            elemento.className = "hora";
+            if (hora === horaSeleccionada) elemento.classList.add("seleccionada");
 
 
             // ==============================
@@ -1001,6 +992,7 @@ function seleccionarHora(
     " | Hora: " +
     horaSeleccionada;
 
+    mostrarHorarios();
 }
 
 
@@ -1198,7 +1190,7 @@ function confirmarCita() {
 
 
     alert(
-        "¡Su cita fue registrada correctamente!"
+        "Su solicitud de cita fue enviada y está pendiente de revisión por el médico."
     );
 
 
