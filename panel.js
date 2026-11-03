@@ -168,9 +168,9 @@ function guardarEspecialidadesAdmin() {
     localStorage.setItem("usuarios", JSON.stringify(usuarios));
 }
 function usuarioMedicoDesdeNombre(nombre) {
-    return nombre.replace(/^Dra?\\.\\s*/i, "")
+    return nombre.replace(/^Dra?\.\s*/i, "")
         .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
-        .toLowerCase().replace(/[^a-z0-9]+/g, ".").replace(/^\\.|\\.$/g, "");
+        .toLowerCase().replace(/[^a-z0-9]+/g, ".").replace(/^\.|\.$/g, "");
 }
 function refrescarSelectoresMedicosAdmin() {
     const gestionEspecialidad = document.getElementById("gestionEspecialidad");
@@ -228,7 +228,7 @@ if (campoNuevaEspecialidad && rolActual() === "administrador") {
         const especialidad = especialidadesMedicas.find(e => e.nombre === selectEspecialidadGestion.value);
         const nombre = campoNombreMedico.value.trim();
         if (!especialidad) return alert("Primero crea o selecciona una especialidad.");
-        if (!nombre || !/^Dra?\\.\\s+.+/i.test(nombre)) return alert("Escribe el nombre con el formato Dr. Nombre o Dra. Nombre.");
+        if (!nombre || !/^Dra?\.\s+.+/i.test(nombre)) return alert("Escribe el nombre con el formato Dr. Nombre o Dra. Nombre.");
         if (especialidadesMedicas.some(e => e.medicos.some(m => m.toLocaleLowerCase() === nombre.toLocaleLowerCase()))) return alert("Ese médico ya está registrado.");
         especialidad.medicos.push(nombre);
         const usuarioMedico = usuarioMedicoDesdeNombre(nombre);
